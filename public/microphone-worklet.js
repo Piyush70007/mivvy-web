@@ -1,0 +1,5 @@
+class MivvyMicrophone extends AudioWorkletProcessor{
+ constructor(){super();this.position=0;this.total=0;this.renderTotal=0;this.count=0;this.frame=new Float32Array(320);this.reference=new Float32Array(320);this.offset=0;this.running=true;this.port.onmessage=e=>{if(e.data==='stop')this.running=false}}
+ process(inputs,outputs){for(const output of outputs)for(const channel of output)channel.fill(0);if(!this.running)return false;const input=inputs[0]?.[0],render=inputs[1]?.[0];if(!input)return true;for(let i=0;i<input.length;i++){this.total+=input[i];this.renderTotal+=render?.[i]||0;this.count++;this.position+=16000/sampleRate;if(this.position>=1){this.position-=1;this.frame[this.offset]=this.total/this.count;this.reference[this.offset++]=this.renderTotal/this.count;this.total=0;this.renderTotal=0;this.count=0;if(this.offset===320){this.port.postMessage({microphone:this.frame,reference:this.reference},[this.frame.buffer,this.reference.buffer]);this.frame=new Float32Array(320);this.reference=new Float32Array(320);this.offset=0}}}return true}
+}
+registerProcessor('mivvy-microphone',MivvyMicrophone);

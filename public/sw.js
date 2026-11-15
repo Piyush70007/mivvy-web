@@ -1,0 +1,2 @@
+self.addEventListener('push',event=>{let data={title:'Mivvy',body:'You have a reminder.'};try{data={...data,...event.data.json()}}catch{}event.waitUntil(self.registration.showNotification(data.title,{body:data.body,icon:'/icon.svg',tag:data.id||'andrea-reminder',data:{url:'/'}}))});
+self.addEventListener('notificationclick',event=>{event.notification.close();event.waitUntil(clients.matchAll({type:'window'}).then(async windows=>{const open=windows.find(w=>w.url.startsWith(self.location.origin));if(open)return open.focus();return clients.openWindow('/')}))});
