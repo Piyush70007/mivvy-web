@@ -7,7 +7,7 @@ import {transcribeVoice} from '../../../lib/transcription.mjs';
 import {connectionStatus,beginConnection,finishConnection,providers,appOrigin,setSlackReminders,sendSlackToMe} from '../../../lib/connections.mjs';
 import {connectedAnswer,connectionIntent} from '../../../lib/connected-assistant.mjs';
 import {laptopCommand,mobileCapabilities} from '../../../lib/mobile.mjs';
-import {requireOwner,streamOffer,streamAnswer,iceConfiguration} from '../../../lib/live-stream.mjs';
+import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamMode} from '../../../lib/live-stream.mjs';
 import {ownerLaptopChat,switchSharedDisplay} from '../../../lib/laptop-chat.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
@@ -109,7 +109,7 @@ async function route(req,ctx){
  if(path==='stream'){
   requireOwner(user);
   if(req.method==='GET'){
-   if(!url.searchParams.get('id'))return json({...iceConfiguration(),protocol:'webrtc-video-v1'});
+   if(!url.searchParams.get('id')){const device=(await db.documents(user.id)).find(d=>d.kind==='device');return json({...iceConfiguration(),protocol:'webrtc-video-v1',displays:device?.data.displays||4})}
    const stream=await db.getStream(user.id,url.searchParams.get('id'));
    return stream?json({stream:{id:stream.id,expires:stream.expires,kind:stream.data.kind,monitor:stream.data.monitor,status:stream.data.status,answer:stream.data.answer,error:stream.data.error||null}}):json({error:'Stream ended, expired or replaced.'},404);
   }
@@ -117,6 +117,7 @@ async function route(req,ctx){
   if(input.action==='start'){
    const data=streamOffer(input),device=(await db.documents(user.id)).find(d=>d.kind==='device');
    if(!device||Date.now()-device.data.lastSeen>25000||device.data.streams!==true)return json({error:'Open the updated Windows companion with Laptop web enabled first.'},409);
+   streamMode(data,device.data.displays||8);
    if(!await db.limit('stream-start:'+user.id,12,60))return json({error:'Please wait before starting another stream.'},429);
    const stream=await db.startStream(user.id,data);return json({stream:{id:stream.id,expires:stream.expires,status:'pending'}});
   }
@@ -124,9 +125,8 @@ async function route(req,ctx){
   if(input.action==='stop'){await db.stopStream(user.id,id);return json({ok:true})}
   if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404)}
   if(input.action==='mode'){
-   if(!['screen','camera'].includes(input.kind))throw new Error('Choose screen or camera.');
-   const monitor=Number(input.monitor??1);if(!Number.isInteger(monitor)||monitor<1||monitor>8)throw new Error('Choose a valid display.');
-   const row=await db.updateStream(user.id,id,{kind:input.kind,monitor},true);return row?json({ok:true}):json({error:'Stream expired.'},404);
+   const device=(await db.documents(user.id)).find(d=>d.kind==='device'),mode=streamMode(input,device?.data.displays||8);
+   const row=await db.updateStream(user.id,id,mode,true);return row?json({ok:true}):json({error:'Stream expired.'},404);
   }
   throw new Error('Unknown stream operation.');
  }

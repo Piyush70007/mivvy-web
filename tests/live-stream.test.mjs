@@ -1,9 +1,14 @@
 process.env.OWNER_EMAIL='owner@example.com';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamIntent} from '../lib/live-stream.mjs';
+import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamIntent,streamMode} from '../lib/live-stream.mjs';
 const owner={owner:true,email:'owner@example.com'};
 const offer={type:'offer',sdp:'v=0\r\nm=video 9 UDP/TLS/RTP/SAVPF 96\r\na=recvonly\r\n'};
+test('display changes accept both physical displays and reject missing ones before updating the stream',()=>{
+ for(const monitor of [1,2])assert.deepEqual(streamMode({kind:'screen',monitor},2),{kind:'screen',monitor});
+ for(const monitor of [0,3,8])assert.throws(()=>streamMode({kind:'screen',monitor},2));
+ assert.deepEqual(streamMode({kind:'camera',monitor:1},2),{kind:'camera',monitor:1});
+});
 test('live video is owner-only and accepts video receive-only offers',()=>{
  requireOwner(owner);for(const user of [null,{owner:false,email:owner.email},{owner:true,email:'other@example.com'}])assert.throws(()=>requireOwner(user),/Owner access/);
  assert.equal(streamOffer({kind:'screen',offer}).monitor,1);

@@ -4,6 +4,7 @@ import {useEffect,useRef,useState} from 'react';
 export default function LaptopLive(){
  const video=useRef(null),peer=useRef(null),channel=useRef(null),session=useRef(null),ended=useRef(false),generation=useRef(0),timers=useRef([]),modeRef=useRef('screen'),monitorRef=useRef(1);
  const [status,setStatus]=useState('Connecting…'),[kind,setKind]=useState('screen'),[monitor,setMonitor]=useState(1),[error,setError]=useState(''),[frames,setFrames]=useState(0);
+ const [displayCount,setDisplayCount]=useState(4);
  function native(event,extra={}){window.webkit?.messageHandlers?.mivvyLive?.postMessage({event,...extra})}
  async function api(body){
   const response=await fetch('/api/stream',{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
@@ -31,6 +32,7 @@ export default function LaptopLive(){
   async function start(){
    try{
     const config=await api();if(!current())return;
+    if(Number.isInteger(config.displays)&&config.displays>=1&&config.displays<=8)setDisplayCount(config.displays);
     const pc=new RTCPeerConnection({iceServers:config.iceServers});peer.current=pc;
     channel.current=pc.createDataChannel('mivvy-live-control');pc.addTransceiver('video',{direction:'recvonly'});
     pc.ontrack=event=>{
@@ -81,7 +83,7 @@ export default function LaptopLive(){
    <span role="status" data-testid="live-status" style={{marginRight:'auto'}}>{error?'Connection issue':status} · {kind}{frames>0?' · '+frames+' frames':''}</span>
    <button onClick={()=>changeMode('screen')} aria-pressed={kind==='screen'}>Screen</button>
    <button onClick={()=>changeMode('camera')} aria-pressed={kind==='camera'}>Camera</button>
-   {kind==='screen'&&<select aria-label="Laptop display" value={monitor} onChange={event=>changeMode('screen',Number(event.target.value))}>{[1,2,3,4].map(id=><option key={id} value={id}>Display {id}</option>)}</select>}
+   {kind==='screen'&&<select aria-label="Laptop display" value={monitor} onChange={event=>changeMode('screen',Number(event.target.value))}>{Array.from({length:displayCount},(_,i)=>i+1).map(id=><option key={id} value={id}>Display {id}</option>)}</select>}
    <button onClick={()=>stop()} aria-label="Close live view">✕</button>
   </div>
   <div style={{position:'relative',flex:1,minHeight:0,display:'grid',placeItems:'center'}}>
