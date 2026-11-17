@@ -11,6 +11,8 @@ import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamMode} from 
 import {ownerLaptopChat,switchSharedDisplay} from '../../../lib/laptop-chat.mjs';
 import {personalToolRequest} from '../../../lib/personal-tools.mjs';
 import {needsLiveResearch} from '../../../lib/live-research.mjs';
+import {resolveAssistantTurn} from '../../../lib/chat-routing.mjs';
+import {actionShaped,routeUnfamiliarOwnerRequest} from '../../../lib/agent-routing.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
 export const dynamic='force-dynamic';
@@ -161,9 +163,9 @@ async function route(req,ctx){
   if(req.method!=='POST')return json({error:'Method not allowed'},405);const input=await body(req),text=String(input.text||'').trim(),conversation=String(input.conversation||'main').slice(0,80),identity=identities.includes(input.identity)?input.identity:'andrea';
   if(!text||text.length>4000)throw new Error('Use a message shorter than 4,000 characters.');if(/\b(?:sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})/.test(text))throw new Error('Keep API keys in server settings, outside conversation.');
   if(!await db.limit('chat:'+user.id,user.owner?300:60,86400)||!await db.limit('global-chat',1500,86400))return json({error:'The daily message allowance has been reached.'},429);
-  const remote=needsLiveResearch(text)?null:await ownerLaptopChat(user,{text,conversation,identity,signal:req.signal,request_id:input.request_id});
-  if(remote?.messages)return json(remote);
-  const result=remote||await answer(user,{text,conversation,identity,search:Boolean(input.search),signal:req.signal});req.signal.throwIfAborted();const mine=await db.addMessage(user.id,conversation,'user',text,identity),reply=await db.addMessage(user.id,conversation,'assistant',result.reply,identity);return json({...result,messages:[mine,reply]});
+  const result=await resolveAssistantTurn(user,{text,conversation,identity,search:Boolean(input.search),signal:req.signal,request_id:input.request_id});
+  if(result?.messages)return json(result);
+  req.signal.throwIfAborted();const mine=await db.addMessage(user.id,conversation,'user',text,identity),reply=await db.addMessage(user.id,conversation,'assistant',result.reply,identity);return json({...result,messages:[mine,reply]});
  }
  if(path==='speak'){
   let input;
@@ -185,7 +187,9 @@ async function route(req,ctx){
   if(!['screen','camera','command'].includes(input.kind))throw new Error('Choose a snapshot or a laptop command.');
   const status=(await db.documents(user.id)).find(d=>d.kind==='device');
   if(input.kind==='command'){
-   const researching=needsLiveResearch(input.request),payload=laptopCommand(user,input,status,{requiresDevice:!researching});if(!await db.limit('remote-command:'+user.id,6,60))return json({error:'Please wait before submitting another laptop command.'},429);
+   let researching=needsLiveResearch(input.request);
+   if(researching&&actionShaped(input.request)){const decision=await routeUnfamiliarOwnerRequest(user,{text:String(input.request),history:await db.messages(user.id,input.conversation),identity:input.identity,signal:req.signal});researching=decision?.route==='research'}
+   const payload=laptopCommand(user,input,status,{requiresDevice:!researching});if(!await db.limit('remote-command:'+user.id,6,60))return json({error:'Please wait before submitting another laptop command.'},429);
    const id=typeof input.request_id==='string'?input.request_id:undefined;if(id&&!/^[a-f0-9-]{36}$/.test(id))throw new Error('Invalid request ID.');
    if(id){const previous=await db.getJob(user.id,id);if(previous){if(previous.status!=='cancelled'&&['request','identity','conversation'].some(key=>(previous.payload?.[key]??null)!==(payload[key]??null)))throw new Error('This request ID already belongs to a different instruction.');return json({job:previous})}}
    const switched=researching?await answer(user,{text:payload.request,conversation:payload.conversation||'laptop',identity:payload.identity,signal:req.signal}):await switchSharedDisplay(user,payload.request,{signal:req.signal});
