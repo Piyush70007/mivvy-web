@@ -14,3 +14,8 @@ test('mobile capability response does not promise unconnected calling or Gmail s
  const capability=mobileCapabilities(owner,online);assert.equal(capability.laptop.commands,true);assert.equal(capability.incomingCalls.ready,false);assert.equal(capability.gmail.send,false);
  const other=mobileCapabilities({email:'other@example.com',owner:false},online);assert.equal(other.laptop.online,false);assert.equal(other.laptop.commands,false);
 });
+test('cloud research uses owner validation without requiring a running desktop',()=>{
+ assert.deepEqual(laptopCommand(owner,{request:'MS Dhoni career stats',identity:'jarvis'},null,{requiresDevice:false}),{request:'MS Dhoni career stats',identity:'jarvis'});
+ assert.throws(()=>laptopCommand({...owner,owner:false},{request:'MS Dhoni career stats'},null,{requiresDevice:false}),/Owner access/);
+ assert.throws(()=>laptopCommand(owner,{request:'Open Brave'},null),/updated Windows/);
+});
