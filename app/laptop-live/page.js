@@ -25,7 +25,8 @@ export default function LaptopLive(){
  }
  useEffect(()=>{
   ended.current=false;const epoch=++generation.current,current=()=>generation.current===epoch&&!ended.current;
-  const initial=new URLSearchParams(location.search).get('kind')==='camera'?'camera':'screen';setKind(initial);modeRef.current=initial;
+  const params=new URLSearchParams(location.search),initial=params.get('kind')==='camera'?'camera':'screen',initialMonitor=Number(params.get('monitor')||1);setKind(initial);modeRef.current=initial;
+  if(Number.isInteger(initialMonitor)&&initialMonitor>=1&&initialMonitor<=8){monitorRef.current=initialMonitor;setMonitor(initialMonitor)}
   let frameCallback;
   async function start(){
    try{
@@ -50,7 +51,14 @@ export default function LaptopLive(){
     const created=await api({action:'start',kind:modeRef.current,monitor:monitorRef.current,offer:{type:'offer',sdp:pc.localDescription.sdp}});
     if(!current()){fetch('/api/stream',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'stop',id:created.stream.id}),keepalive:true}).catch(()=>{});return}
     session.current=created.stream.id;native('session',{id:created.stream.id});
-    timers.current.push(setInterval(()=>{if(session.current)api({action:'heartbeat',id:session.current}).catch(err=>{setError(err.message);stop(false)})},8000));
+    timers.current.push(setInterval(()=>{if(session.current)api({action:'heartbeat',id:session.current}).then(data=>{
+     if(!current())return;
+     if(['screen','camera'].includes(data.kind)&&Number.isInteger(data.monitor)&&data.monitor>=1&&data.monitor<=8){
+      const changed=modeRef.current!==data.kind||monitorRef.current!==data.monitor;
+      modeRef.current=data.kind;monitorRef.current=data.monitor;setKind(data.kind);setMonitor(data.monitor);
+      if(changed)native('mode',{kind:data.kind,monitor:String(data.monitor)});
+     }
+    }).catch(err=>{setError(err.message);stop(false)})},8000));
     const deadline=Date.now()+35000;
     while(current()&&Date.now()<deadline){
      const response=await fetch('/api/stream?id='+encodeURIComponent(session.current),{cache:'no-store'}),data=await response.json();
@@ -64,7 +72,7 @@ export default function LaptopLive(){
    }catch(err){if(current()){setError(err.message);native('error',{message:err.message});stop(false)}}
   }
   const hidden=event=>{if(document.hidden||event.type==='pagehide')stop()};
-  const nativeMode=event=>{if(['screen','camera'].includes(event.detail))changeMode(event.detail)};
+  const nativeMode=event=>{const detail=typeof event.detail==='string'?{kind:event.detail}:event.detail;if(['screen','camera'].includes(detail?.kind)){const chosen=Number(detail.monitor??monitorRef.current);if(Number.isInteger(chosen)&&chosen>=1&&chosen<=8)changeMode(detail.kind,chosen)}};
   document.addEventListener('visibilitychange',hidden);window.addEventListener('pagehide',hidden);window.addEventListener('mivvy-mode',nativeMode);start();
   return()=>{if(frameCallback&&video.current?.cancelVideoFrameCallback)video.current.cancelVideoFrameCallback(frameCallback);document.removeEventListener('visibilitychange',hidden);window.removeEventListener('pagehide',hidden);window.removeEventListener('mivvy-mode',nativeMode);stop(false)};
  },[]);

@@ -8,6 +8,7 @@ import {connectionStatus,beginConnection,finishConnection,providers,appOrigin,se
 import {connectedAnswer,connectionIntent} from '../../../lib/connected-assistant.mjs';
 import {laptopCommand,mobileCapabilities} from '../../../lib/mobile.mjs';
 import {requireOwner,streamOffer,streamAnswer,iceConfiguration} from '../../../lib/live-stream.mjs';
+import {ownerLaptopChat,switchSharedDisplay} from '../../../lib/laptop-chat.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
 export const dynamic='force-dynamic';
@@ -33,7 +34,8 @@ async function route(req,ctx){
  if(path==='device'){
   if(!deviceAuth(req))return json({error:'Unauthorized'},401);await db.init();const owner=await db.userByEmail(ownerEmail());if(!owner?.owner)return json({error:'Owner must sign in first.'},409);
   if(req.method==='GET'){
-   await db.putDoc(owner.id,'device',{lastSeen:Date.now(),name:'Piyush’s laptop',commands:url.searchParams.get('commands')==='1',streams:url.searchParams.get('streams')==='1'},'laptop-status');
+   const displays=Number(url.searchParams.get('displays'));
+   await db.putDoc(owner.id,'device',{lastSeen:Date.now(),name:'Piyush’s laptop',commands:url.searchParams.get('commands')==='1',streams:url.searchParams.get('streams')==='1',...(Number.isInteger(displays)&&displays>=1&&displays<=8?{displays}:{})},'laptop-status');
    const stream=await db.getStream(owner.id),running=url.searchParams.get('running'),active=running?await db.getJob(owner.id,running):null;
    return json({job:await db.claimJob(),stream:stream?{...stream,iceServers:iceConfiguration().iceServers}:null,cancelCommand:active?.status==='cancelled'?running:null});
   }
@@ -120,7 +122,7 @@ async function route(req,ctx){
   }
   const id=String(input.id||'');if(!/^[a-f0-9-]{36}$/.test(id))throw new Error('Stream ID missing.');
   if(input.action==='stop'){await db.stopStream(user.id,id);return json({ok:true})}
-  if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires}):json({error:'Stream expired.'},404)}
+  if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404)}
   if(input.action==='mode'){
    if(!['screen','camera'].includes(input.kind))throw new Error('Choose screen or camera.');
    const monitor=Number(input.monitor??1);if(!Number.isInteger(monitor)||monitor<1||monitor>8)throw new Error('Choose a valid display.');
@@ -146,7 +148,9 @@ async function route(req,ctx){
   if(req.method!=='POST')return json({error:'Method not allowed'},405);const input=await body(req),text=String(input.text||'').trim(),conversation=String(input.conversation||'main').slice(0,80),identity=identities.includes(input.identity)?input.identity:'andrea';
   if(!text||text.length>4000)throw new Error('Use a message shorter than 4,000 characters.');if(/\b(?:sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})/.test(text))throw new Error('Keep API keys in server settings, outside conversation.');
   if(!await db.limit('chat:'+user.id,user.owner?300:60,86400)||!await db.limit('global-chat',1500,86400))return json({error:'The daily message allowance has been reached.'},429);
-  const result=await answer(user,{text,conversation,identity,search:Boolean(input.search),signal:req.signal});req.signal.throwIfAborted();const mine=await db.addMessage(user.id,conversation,'user',text,identity),reply=await db.addMessage(user.id,conversation,'assistant',result.reply,identity);return json({...result,messages:[mine,reply]});
+  const remote=await ownerLaptopChat(user,{text,conversation,identity,signal:req.signal});
+  if(remote?.messages)return json(remote);
+  const result=remote||await answer(user,{text,conversation,identity,search:Boolean(input.search),signal:req.signal});req.signal.throwIfAborted();const mine=await db.addMessage(user.id,conversation,'user',text,identity),reply=await db.addMessage(user.id,conversation,'assistant',result.reply,identity);return json({...result,messages:[mine,reply]});
  }
  if(path==='speak'){
   let input;
@@ -170,6 +174,16 @@ async function route(req,ctx){
   if(input.kind==='command'){
    const payload=laptopCommand(user,input,status);if(!await db.limit('remote-command:'+user.id,6,60))return json({error:'Please wait before submitting another laptop command.'},429);
    const id=typeof input.request_id==='string'?input.request_id:undefined;if(id&&!/^[a-f0-9-]{36}$/.test(id))throw new Error('Invalid request ID.');
+   const switched=await switchSharedDisplay(user,payload.request,{signal:req.signal});
+   if(switched){
+    req.signal.throwIfAborted();const job=await db.completedCommand(user.id,payload,{reply:switched.reply},id);
+    if(job.status==='done'){
+     await db.addMessage(user.id,payload.conversation||'laptop','user',payload.request,payload.identity,'remote-user-'+job.id);
+     const reply=await db.addMessage(user.id,payload.conversation||'laptop','assistant',job.result.reply,payload.identity,'remote-assistant-'+job.id);
+     job.result.message_id=reply.id;
+    }
+    return json({job});
+   }
    req.signal.throwIfAborted();const job=await db.newJob(user.id,'command',payload,id);if(req.signal.aborted){await db.cancelJob(user.id,job.id);req.signal.throwIfAborted()}return json({job});
   }
   if(!await db.limit('capture:'+user.id,30,60))return json({error:'Please wait before taking another snapshot.'},429);if(!status||Date.now()-status.data.lastSeen>25000)return json({error:'Laptop offline. Open the desktop companion first.'},409);return json({job:await db.newJob(user.id,input.kind)});
