@@ -9,6 +9,7 @@ import {connectedAnswer,connectionIntent} from '../../../lib/connected-assistant
 import {laptopCommand,mobileCapabilities} from '../../../lib/mobile.mjs';
 import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamMode} from '../../../lib/live-stream.mjs';
 import {ownerLaptopChat,switchSharedDisplay} from '../../../lib/laptop-chat.mjs';
+import {personalToolRequest} from '../../../lib/personal-tools.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
 export const dynamic='force-dynamic';
@@ -62,6 +63,17 @@ async function route(req,ctx){
    if(!await db.limit('connected:'+owner.id,200,86400))return json({error:'Connected service allowance reached.'},429);
    const context=Array.isArray(input.context)?input.context.filter(m=>['user','assistant'].includes(m?.role)&&typeof m.content==='string').slice(-8).map(m=>({role:m.role,content:m.content.slice(0,5000)})):[];
    return json(await connectedAnswer(owner,{text,identity:identities.includes(input.identity)?input.identity:'andrea',history:context.length?context:(await db.messages(owner.id,'laptop')).slice(-8),signal:req.signal}));
+  }
+  if(input.action==='personal_tool'||input.action==='switch_display'){
+   const text=String(input.request||'').trim();if(!text||text.length>4000||/\b(?:sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})/.test(text))throw new Error('Use a tool request without credentials.');
+   const history=Array.isArray(input.context)?input.context.filter(m=>['user','assistant'].includes(m?.role)&&typeof m.content==='string').slice(-8).map(m=>({role:m.role,content:m.content.slice(0,5000)})):[];
+   const identity=identities.includes(input.identity)?input.identity:'andrea';
+   if(input.action==='switch_display'){const result=await switchSharedDisplay(owner,text,{signal:req.signal});if(!result)throw new Error('Name the live screen display to select.');return json({...result,identity})}
+   if(!personalToolRequest(text,history))throw new Error('Use an explicit reminder, task, money, note, habit or preference request.');
+   if(!await db.limit('desktop-tools:'+owner.id,200,86400))return json({error:'Personal tool allowance reached.'},429);
+   const conversation='desktop-tools-'+identity;
+   const result=await answer(owner,{text,identity,conversation,history,signal:req.signal});
+   await db.addMessage(owner.id,conversation,'user',text,identity);await db.addMessage(owner.id,conversation,'assistant',result.reply,identity);return json(result);
   }
   if(input.action==='tick')return json(await reminderTick());throw new Error('Unknown device operation.');
  }

@@ -1,0 +1,2689 @@
+{
+  "version": 1,
+  "sources": [
+    "https://github.com/rsg28/jarvis",
+    "https://github.com/aymanokas/jarvis",
+    "https://github.com/archibuildstudio/jarvis-mark-ii",
+    "https://github.com/PHENOMVALENCE/JARVIS-OS/blob/main/COMMANDS.md"
+  ],
+  "note": "200 representative phrases; not 200 independent capabilities. Expected contracts are hand specified. Provider/device actions are isolated in automated tests.",
+  "commands": [
+    {
+      "id": "J001",
+      "category": "Applications",
+      "text": "Open Chrome",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "chrome"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J002",
+      "category": "Applications",
+      "text": "Open Brave",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "brave"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J003",
+      "category": "Applications",
+      "text": "Open Edge",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "edge"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J004",
+      "category": "Applications",
+      "text": "Open Notepad",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "notepad"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J005",
+      "category": "Applications",
+      "text": "Open Calculator",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "calculator"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J006",
+      "category": "Applications",
+      "text": "Open Paint",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "paint"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J007",
+      "category": "Applications",
+      "text": "Open File Explorer",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "file explorer"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J008",
+      "category": "Applications",
+      "text": "Open VS Code",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "visual studio code"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J009",
+      "category": "Applications",
+      "text": "Open Spotify",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "spotify"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J010",
+      "category": "Applications",
+      "text": "Open Discord",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "discord"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J011",
+      "category": "Applications",
+      "text": "Open WhatsApp",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "whatsapp"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J012",
+      "category": "Applications",
+      "text": "Open Telegram",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "telegram"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J013",
+      "category": "Applications",
+      "text": "Open Slack",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "slack"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J014",
+      "category": "Applications",
+      "text": "Open Zoom",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "zoom"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J015",
+      "category": "Applications",
+      "text": "Open Microsoft Teams",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "microsoft teams"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J016",
+      "category": "Applications",
+      "text": "Open Word",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "word"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J017",
+      "category": "Applications",
+      "text": "Open Excel",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "excel"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J018",
+      "category": "Applications",
+      "text": "Open PowerPoint",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "powerpoint"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J019",
+      "category": "Applications",
+      "text": "Open Outlook",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "outlook"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J020",
+      "category": "Applications",
+      "text": "Open OneNote",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "onenote"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J021",
+      "category": "Applications",
+      "text": "Open Settings",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "settings"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J022",
+      "category": "Applications",
+      "text": "Open Task Manager",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "task manager"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J023",
+      "category": "Applications",
+      "text": "Open Camera",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "camera"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J024",
+      "category": "Applications",
+      "text": "Open Photos",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "photos"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J025",
+      "category": "Applications",
+      "text": "Open Clock",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "clock"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J026",
+      "category": "Applications",
+      "text": "Open Microsoft Store",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "microsoft store"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J027",
+      "category": "Applications",
+      "text": "Open Snipping Tool",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "snipping tool"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J028",
+      "category": "Applications",
+      "text": "Open ChatGPT",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "chatgpt"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J029",
+      "category": "Applications",
+      "text": "Open Figma",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "figma"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J030",
+      "category": "Applications",
+      "text": "Open Obsidian",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "obsidian"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J031",
+      "category": "Websites",
+      "text": "Go to Gmail",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://mail.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J032",
+      "category": "Websites",
+      "text": "Go to GitHub",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://github.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J033",
+      "category": "Websites",
+      "text": "Go to LinkedIn",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.linkedin.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J034",
+      "category": "Websites",
+      "text": "Go to Google Drive",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://drive.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J035",
+      "category": "Websites",
+      "text": "Go to Google Docs",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://docs.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J036",
+      "category": "Websites",
+      "text": "Go to Google Calendar",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://calendar.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J037",
+      "category": "Websites",
+      "text": "Go to Google Maps",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.google.com/maps"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J038",
+      "category": "Websites",
+      "text": "Go to Google Photos",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://photos.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J039",
+      "category": "Websites",
+      "text": "Go to Overleaf",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.overleaf.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J040",
+      "category": "Websites",
+      "text": "Go to Vercel",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://vercel.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J041",
+      "category": "Websites",
+      "text": "Go to Wikipedia",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.wikipedia.org"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J042",
+      "category": "Websites",
+      "text": "Go to Reddit",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.reddit.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J043",
+      "category": "Websites",
+      "text": "Go to Instagram",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.instagram.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J044",
+      "category": "Websites",
+      "text": "Go to Netflix",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.netflix.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J045",
+      "category": "Websites",
+      "text": "Go to Amazon",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.amazon.in"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J046",
+      "category": "Websites",
+      "text": "Go to TradingView",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.tradingview.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J047",
+      "category": "Websites",
+      "text": "Go to Claude",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://claude.ai"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J048",
+      "category": "Websites",
+      "text": "Go to Gemini",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://gemini.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J049",
+      "category": "Websites",
+      "text": "Go to Hugging Face",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://huggingface.co"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J050",
+      "category": "Websites",
+      "text": "Go to YouTube",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_website",
+          {
+            "url": "https://www.youtube.com",
+            "browser": "chrome"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J051",
+      "category": "Music and video",
+      "text": "Play Kesariya",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "kesariya"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J052",
+      "category": "Music and video",
+      "text": "Put on some lofi",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "lofi"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J053",
+      "category": "Music and video",
+      "text": "I want to listen to Coldplay",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "coldplay"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J054",
+      "category": "Music and video",
+      "text": "Play Arijit Singh songs on Chrome",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "arijit singh songs"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J055",
+      "category": "Music and video",
+      "text": "YouTube pe Tum Hi Ho chalao",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "tum hi ho"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J056",
+      "category": "Music and video",
+      "text": "Koi bhi gaana lagao",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "random song"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J057",
+      "category": "Music and video",
+      "text": "Play some acoustic music",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "acoustic music"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J058",
+      "category": "Music and video",
+      "text": "Open YouTube and play Believer",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "believer"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J059",
+      "category": "Music and video",
+      "text": "Search Arijit song and play it on Chrome",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "arijit song"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J060",
+      "category": "Music and video",
+      "text": "Play a random song",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "random song"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J061",
+      "category": "Music and video",
+      "text": "Pause the music",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J062",
+      "category": "Music and video",
+      "text": "Stop the video",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J063",
+      "category": "Music and video",
+      "text": "Resume the song",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "play"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J064",
+      "category": "Music and video",
+      "text": "Unpause the music",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "play"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J065",
+      "category": "Music and video",
+      "text": "Skip this song",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "next"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J066",
+      "category": "Music and video",
+      "text": "Next track",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "next"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J067",
+      "category": "Music and video",
+      "text": "Play the previous song",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "previous"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J068",
+      "category": "Music and video",
+      "text": "Go back 30 seconds",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "rewind",
+            "seconds": 30
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J069",
+      "category": "Music and video",
+      "text": "Rewind 10 seconds",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "rewind",
+            "seconds": 10
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J070",
+      "category": "Music and video",
+      "text": "Fast forward 2 minutes",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "forward",
+            "seconds": 120
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J071",
+      "category": "Music and video",
+      "text": "Skip ahead 20 seconds",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "forward",
+            "seconds": 20
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J072",
+      "category": "Music and video",
+      "text": "Gana rok do",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J073",
+      "category": "Music and video",
+      "text": "गाना रोक दो",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J074",
+      "category": "Music and video",
+      "text": "Pause",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J075",
+      "category": "Music and video",
+      "text": "Resume",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "play"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J076",
+      "category": "Volume",
+      "text": "Lower the volume",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J077",
+      "category": "Volume",
+      "text": "Turn it down a little",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J078",
+      "category": "Volume",
+      "text": "Make it quieter",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J079",
+      "category": "Volume",
+      "text": "Volume kam kar do",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J080",
+      "category": "Volume",
+      "text": "Thodi awaaz dheemi kar do",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J081",
+      "category": "Volume",
+      "text": "आवाज़ कम कर दो",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J082",
+      "category": "Volume",
+      "text": "Turn it up",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J083",
+      "category": "Volume",
+      "text": "Make it louder",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J084",
+      "category": "Volume",
+      "text": "Volume badha do",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J085",
+      "category": "Volume",
+      "text": "आवाज़ बढ़ा दो",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J086",
+      "category": "Volume",
+      "text": "Set volume to 30 percent",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 30
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J087",
+      "category": "Volume",
+      "text": "Volume 50",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 50
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J088",
+      "category": "Volume",
+      "text": "Set the volume to 100",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 100
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J089",
+      "category": "Volume",
+      "text": "Set volume to zero",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 0
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J090",
+      "category": "Volume",
+      "text": "Volume forty percent",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 40
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J091",
+      "category": "Volume",
+      "text": "Mute the sound",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "mute"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J092",
+      "category": "Volume",
+      "text": "Unmute",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "unmute"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J093",
+      "category": "Volume",
+      "text": "Turn the audio down slightly",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J094",
+      "category": "Volume",
+      "text": "Increase volume a bit",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J095",
+      "category": "Volume",
+      "text": "My volume down please",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J096",
+      "category": "Multiple actions",
+      "text": "Open Chrome and set volume to 30",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "chrome"
+          }
+        ],
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 30
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J097",
+      "category": "Multiple actions",
+      "text": "Notepad kholo aur awaaz dheemi kar do",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "notepad"
+          }
+        ],
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J098",
+      "category": "Multiple actions",
+      "text": "Open YouTube and play Kesariya and turn it up",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "kesariya"
+          }
+        ],
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J099",
+      "category": "Multiple actions",
+      "text": "Pause the music and open Gmail",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ],
+        [
+          "open_website",
+          {
+            "url": "https://mail.google.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J100",
+      "category": "Multiple actions",
+      "text": "Open Notepad then open Calculator",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "notepad"
+          }
+        ],
+        [
+          "open_application",
+          {
+            "name": "calculator"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J101",
+      "category": "Multiple actions",
+      "text": "Close Brave and Chrome",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "close_browser",
+          {
+            "application": "brave"
+          }
+        ],
+        [
+          "close_browser",
+          {
+            "application": "chrome"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J102",
+      "category": "Multiple actions",
+      "text": "Close Chrome, Brave and Edge",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "close_browser",
+          {
+            "application": "chrome"
+          }
+        ],
+        [
+          "close_browser",
+          {
+            "application": "brave"
+          }
+        ],
+        [
+          "close_browser",
+          {
+            "application": "edge"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J103",
+      "category": "Multiple actions",
+      "text": "Open Chrome and Brave",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "chrome"
+          }
+        ],
+        [
+          "open_application",
+          {
+            "name": "brave"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J104",
+      "category": "Multiple actions",
+      "text": "Set volume to 20 and play lofi",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 20
+          }
+        ],
+        [
+          "play_video",
+          {
+            "query": "lofi"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J105",
+      "category": "Multiple actions",
+      "text": "Play Believer then pause the music",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "believer"
+          }
+        ],
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J106",
+      "category": "Multiple actions",
+      "text": "Lower the volume and pause the video",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_volume",
+          {
+            "action": "lower"
+          }
+        ],
+        [
+          "control_media",
+          {
+            "action": "pause"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J107",
+      "category": "Multiple actions",
+      "text": "Open Chrome search YouTube and search Arijit sing song and play it",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "play_video",
+          {
+            "query": "arijit singh song"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J108",
+      "category": "Multiple actions",
+      "text": "Rewind 15 seconds and raise the volume",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "control_media",
+          {
+            "action": "rewind",
+            "seconds": 15
+          }
+        ],
+        [
+          "control_volume",
+          {
+            "action": "raise"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J109",
+      "category": "Multiple actions",
+      "text": "Open Brave then go to github.com",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "brave"
+          }
+        ],
+        [
+          "open_website",
+          {
+            "url": "https://github.com"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J110",
+      "category": "Multiple actions",
+      "text": "Open ChatGPT and set volume to 40",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_application",
+          {
+            "name": "chatgpt"
+          }
+        ],
+        [
+          "control_volume",
+          {
+            "action": "set",
+            "value": 40
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J111",
+      "category": "Information and research",
+      "text": "Google Python decorators",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "search_web",
+          {
+            "query": "python decorators"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J112",
+      "category": "Information and research",
+      "text": "Search the web for AI jobs in Germany",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "search_web",
+          {
+            "query": "ai jobs in germany"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J113",
+      "category": "Information and research",
+      "text": "Look up vegetarian dinner ideas",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "search_web",
+          {
+            "query": "vegetarian dinner ideas"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J114",
+      "category": "Timers and reminders",
+      "text": "Set a timer for 10 minutes",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "reminder",
+      "data": {
+        "title": "Timer",
+        "relativeMinutes": 10
+      }
+    },
+    {
+      "id": "J115",
+      "category": "Information and research",
+      "text": "Research the weather in Berlin today",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "research_web",
+      "args": {
+        "query": "weather in Berlin today"
+      }
+    },
+    {
+      "id": "J116",
+      "category": "Information and research",
+      "text": "Find current artificial intelligence news",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "research_web",
+      "args": {
+        "query": "artificial intelligence news"
+      }
+    },
+    {
+      "id": "J117",
+      "category": "Information and research",
+      "text": "What are the latest NVIDIA announcements?",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "research_web",
+      "args": {
+        "query": "latest NVIDIA announcements"
+      }
+    },
+    {
+      "id": "J118",
+      "category": "Information and research",
+      "text": "Check the newest Python release",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "research_web",
+      "args": {
+        "query": "newest Python release"
+      }
+    },
+    {
+      "id": "J119",
+      "category": "Information and research",
+      "text": "What time is it on my laptop?",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "get_datetime",
+          {}
+        ]
+      ]
+    },
+    {
+      "id": "J120",
+      "category": "Information and research",
+      "text": "What is today's date on my laptop?",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "get_datetime",
+          {}
+        ]
+      ]
+    },
+    {
+      "id": "J121",
+      "category": "Information and research",
+      "text": "How much battery does my laptop have?",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "system_status",
+          {
+            "section": "battery"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J122",
+      "category": "Information and research",
+      "text": "Check CPU and RAM usage on my laptop",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "system_status",
+          {
+            "section": "all"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J123",
+      "category": "Information and research",
+      "text": "How much free disk space is on my laptop?",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "system_status",
+          {
+            "section": "disk"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J124",
+      "category": "Information and research",
+      "text": "Read https://example.com for me",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "read_web_page",
+      "args": {
+        "url": "https://example.com"
+      }
+    },
+    {
+      "id": "J125",
+      "category": "Desktop app controls",
+      "text": "Read the displayed NVIDIA price in TradingView",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "tradingview_chart",
+      "args": {
+        "browser": "Chrome"
+      }
+    },
+    {
+      "id": "J126",
+      "category": "Files and screen",
+      "text": "Find my project report on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "find_files",
+      "args": {
+        "query": "project report"
+      }
+    },
+    {
+      "id": "J127",
+      "category": "Files and screen",
+      "text": "Find the PDF named contract on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "find_files",
+      "args": {
+        "query": "contract"
+      }
+    },
+    {
+      "id": "J128",
+      "category": "Files and screen",
+      "text": "Read the text file I selected on my laptop",
+      "kind": "clarify",
+      "ios": "laptop",
+      "tool": "read_text_file",
+      "args": {
+        "path": "$FIXTURE"
+      },
+      "setup": "No file selection or prior path is available. Ask for a path or inspect the selection before reading; never invent file contents."
+    },
+    {
+      "id": "J129",
+      "category": "Files and screen",
+      "text": "Create a local text note on my laptop called Ideas saying build a garden app",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "create_note",
+      "args": {
+        "title": "Ideas",
+        "text": "build a garden app"
+      }
+    },
+    {
+      "id": "J130",
+      "category": "Files and screen",
+      "text": "List the open windows on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "list_open_windows",
+      "args": {}
+    },
+    {
+      "id": "J131",
+      "category": "Files and screen",
+      "text": "Show installed apps matching editor on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "list_applications",
+      "args": {
+        "query": "editor"
+      }
+    },
+    {
+      "id": "J132",
+      "category": "Files and screen",
+      "text": "Inspect my screen",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "inspect_screen",
+          {}
+        ]
+      ]
+    },
+    {
+      "id": "J133",
+      "category": "Files and screen",
+      "text": "Look at my laptop screen and explain the error",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "inspect_screen",
+      "args": {}
+    },
+    {
+      "id": "J134",
+      "category": "Files and screen",
+      "text": "Open my Downloads folder",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_folder",
+          {
+            "name": "Downloads"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J135",
+      "category": "Files and screen",
+      "text": "Open Documents",
+      "kind": "local",
+      "ios": "laptop",
+      "steps": [
+        [
+          "open_folder",
+          {
+            "name": "Documents"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "J136",
+      "category": "Personal tools",
+      "text": "Remind me to sign the contract on 2 December 2026 at 9 AM German time",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "reminder",
+      "data": {
+        "title": "Sign contract",
+        "at": "2026-12-02T08:00:00.000Z",
+        "timeZone": "Europe/Berlin"
+      }
+    },
+    {
+      "id": "J137",
+      "category": "Timers and reminders",
+      "text": "Start a 25 minute focus timer",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "reminder",
+      "data": {
+        "title": "Focus timer",
+        "relativeMinutes": 25
+      }
+    },
+    {
+      "id": "J138",
+      "category": "Personal tools",
+      "text": "Kal subah 9 baje paani peene ka reminder set karo",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "reminder",
+      "data": {
+        "title": "Drink water",
+        "relativeDay": 1
+      }
+    },
+    {
+      "id": "J139",
+      "category": "Personal tools",
+      "text": "Add buy milk to my daily tasks",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "task",
+      "data": {
+        "title": "Buy milk"
+      }
+    },
+    {
+      "id": "J140",
+      "category": "Personal tools",
+      "text": "Put finish my CV in my to-do list",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "task",
+      "data": {
+        "title": "Finish CV"
+      }
+    },
+    {
+      "id": "J141",
+      "category": "Personal tools",
+      "text": "Daily task mein groceries add karo",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "task",
+      "data": {
+        "title": "Groceries"
+      }
+    },
+    {
+      "id": "J142",
+      "category": "Personal tools",
+      "text": "Log 250 rupees for lunch in Money space",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "expense",
+      "data": {
+        "title": "Lunch",
+        "amount": 250
+      }
+    },
+    {
+      "id": "J143",
+      "category": "Personal tools",
+      "text": "Add a 90 rupee bus expense",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "expense",
+      "data": {
+        "title": "Bus",
+        "amount": 90
+      }
+    },
+    {
+      "id": "J144",
+      "category": "Personal tools",
+      "text": "Record that I spent 1200 rupees on groceries",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "expense",
+      "data": {
+        "title": "Groceries",
+        "amount": 1200
+      }
+    },
+    {
+      "id": "J145",
+      "category": "Personal tools",
+      "text": "Aaj coffee par 150 rupees kharch hue, expense add karo",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "expense",
+      "data": {
+        "title": "Coffee",
+        "amount": 150
+      }
+    },
+    {
+      "id": "J146",
+      "category": "Personal tools",
+      "text": "Set my monthly food budget to 6000 rupees",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "budget",
+      "data": {
+        "title": "Food budget",
+        "amount": 6000
+      }
+    },
+    {
+      "id": "J147",
+      "category": "Personal tools",
+      "text": "Save a note called Ideas with build a garden app",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "note",
+      "data": {
+        "title": "Ideas",
+        "body": "Build a garden app"
+      }
+    },
+    {
+      "id": "J148",
+      "category": "Personal tools",
+      "text": "Add a note that the meeting room is B12",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "note",
+      "data": {
+        "title": "Meeting room",
+        "body": "B12"
+      }
+    },
+    {
+      "id": "J149",
+      "category": "Personal tools",
+      "text": "Add a daily habit to read for twenty minutes",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "habit",
+      "data": {
+        "title": "Read for twenty minutes"
+      }
+    },
+    {
+      "id": "J150",
+      "category": "Personal tools",
+      "text": "Remember that I prefer short replies",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "preference",
+      "data": {
+        "title": "Reply preference",
+        "body": "Short replies"
+      }
+    },
+    {
+      "id": "J151",
+      "category": "Team coding and memory",
+      "text": "Team, build a full stack notes app",
+      "kind": "team",
+      "ios": "laptop",
+      "team": "start"
+    },
+    {
+      "id": "J152",
+      "category": "Team coding and memory",
+      "text": "Team status",
+      "kind": "team",
+      "ios": "laptop",
+      "team": "status"
+    },
+    {
+      "id": "J153",
+      "category": "Team coding and memory",
+      "text": "Stop the team",
+      "kind": "team",
+      "ios": "laptop",
+      "team": "cancel"
+    },
+    {
+      "id": "J154",
+      "category": "Team coding and memory",
+      "text": "Find my coding projects on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "coding_workspace",
+      "args": {
+        "action": "discover"
+      }
+    },
+    {
+      "id": "J155",
+      "category": "Team coding and memory",
+      "text": "Review the selected project without changing files",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "coding_workspace",
+      "args": {
+        "action": "start",
+        "mode": "review"
+      }
+    },
+    {
+      "id": "J156",
+      "category": "Team coding and memory",
+      "text": "Show the status of my coding job",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "coding_workspace",
+      "args": {
+        "action": "status"
+      }
+    },
+    {
+      "id": "J157",
+      "category": "Team coding and memory",
+      "text": "Find my latest CV on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "career_workspace",
+      "args": {
+        "action": "discover_cv"
+      }
+    },
+    {
+      "id": "J158",
+      "category": "Team coding and memory",
+      "text": "Find AI jobs in Germany using my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "career_workspace",
+      "args": {
+        "action": "search",
+        "query": "AI jobs Germany"
+      }
+    },
+    {
+      "id": "J159",
+      "category": "Team coding and memory",
+      "text": "List the application packs prepared on my laptop",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "career_workspace",
+      "args": {
+        "action": "list"
+      }
+    },
+    {
+      "id": "J160",
+      "category": "Team coding and memory",
+      "text": "Remember my preferred editor is VS Code",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "preference",
+      "data": {
+        "title": "Preference",
+        "body": "Preferred editor: VS Code"
+      }
+    },
+    {
+      "id": "J161",
+      "category": "Team coding and memory",
+      "text": "Remember my favorite music is acoustic",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "preference",
+      "data": {
+        "title": "Preference",
+        "body": "Favorite music: acoustic"
+      }
+    },
+    {
+      "id": "J162",
+      "category": "Team coding and memory",
+      "text": "Remember that my browser preference is Brave",
+      "kind": "personal",
+      "ios": "cloud",
+      "entry": "preference",
+      "data": {
+        "title": "Preference",
+        "body": "Preferred browser: Brave"
+      }
+    },
+    {
+      "id": "J163",
+      "category": "Team coding and memory",
+      "text": "Recall my previous team project about notes",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "recall_memory",
+      "args": {
+        "query": "notes"
+      }
+    },
+    {
+      "id": "J164",
+      "category": "Desktop app controls",
+      "text": "Join the General voice channel in the Fury Discord server",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "discord_voice",
+      "args": {
+        "server": "Fury",
+        "channel": "General"
+      }
+    },
+    {
+      "id": "J165",
+      "category": "Desktop app controls",
+      "text": "Disconnect from Discord voice",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "discord_voice",
+      "args": {}
+    },
+    {
+      "id": "J166",
+      "category": "Gmail and Slack",
+      "text": "Check Gmail for updates about my job applications",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J167",
+      "category": "Gmail and Slack",
+      "text": "Find unread emails in my inbox",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J168",
+      "category": "Gmail and Slack",
+      "text": "Read my latest interview messages",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J169",
+      "category": "Gmail and Slack",
+      "text": "Search Gmail for messages about a contract",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J170",
+      "category": "Gmail and Slack",
+      "text": "Show new emails about my application",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J171",
+      "category": "Gmail and Slack",
+      "text": "Look for messages from my recruiter in Gmail",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J172",
+      "category": "Gmail and Slack",
+      "text": "Mere Gmail mein interview emails dekho",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J173",
+      "category": "Gmail and Slack",
+      "text": "Gmail ke naye messages check karo",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J174",
+      "category": "Gmail and Slack",
+      "text": "Send me a Slack DM saying the test is ready",
+      "kind": "connected",
+      "ios": "cloud"
+    },
+    {
+      "id": "J175",
+      "category": "Desktop app controls",
+      "text": "Add RSI to my TradingView chart",
+      "kind": "model",
+      "ios": "laptop",
+      "tool": "tradingview_chart",
+      "args": {
+        "indicator": "RSI"
+      }
+    },
+    {
+      "id": "J176",
+      "category": "Live display",
+      "text": "Switch my display to screen 1",
+      "kind": "display",
+      "ios": "stream",
+      "monitor": 1
+    },
+    {
+      "id": "J177",
+      "category": "Live display",
+      "text": "Can you switch my display to screen 2",
+      "kind": "display",
+      "ios": "stream",
+      "monitor": 2
+    },
+    {
+      "id": "J178",
+      "category": "Live display",
+      "text": "Screen 2 dikhao",
+      "kind": "display",
+      "ios": "stream",
+      "monitor": 2
+    },
+    {
+      "id": "J179",
+      "category": "Live display",
+      "text": "Switch the shared screen to monitor two",
+      "kind": "display",
+      "ios": "stream",
+      "monitor": 2
+    },
+    {
+      "id": "J180",
+      "category": "Live display",
+      "text": "Change the display to 1",
+      "kind": "display",
+      "ios": "stream",
+      "monitor": 1
+    },
+    {
+      "id": "J181",
+      "category": "Voice and identity",
+      "text": "Andrea",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "wake",
+      "identity": "andrea"
+    },
+    {
+      "id": "J182",
+      "category": "Voice and identity",
+      "text": "Jarvis",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "wake",
+      "identity": "jarvis"
+    },
+    {
+      "id": "J183",
+      "category": "Voice and identity",
+      "text": "Ultron",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "wake",
+      "identity": "ultron"
+    },
+    {
+      "id": "J184",
+      "category": "Voice and identity",
+      "text": "Hey Andrea, hello there",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "reply",
+      "identity": "andrea"
+    },
+    {
+      "id": "J185",
+      "category": "Voice and identity",
+      "text": "Goodbye",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "sleep",
+      "identity": "andrea"
+    },
+    {
+      "id": "J186",
+      "category": "Voice and identity",
+      "text": "Goodnight",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "sleep",
+      "identity": "andrea"
+    },
+    {
+      "id": "J187",
+      "category": "Voice and identity",
+      "text": "ठीक है बाय",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "sleep",
+      "identity": "andrea"
+    },
+    {
+      "id": "J188",
+      "category": "Voice and identity",
+      "text": "Stop talking",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "stop_speech",
+      "identity": "andrea"
+    },
+    {
+      "id": "J189",
+      "category": "Voice and identity",
+      "text": "Mute microphone",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "microphone_off",
+      "identity": "andrea"
+    },
+    {
+      "id": "J190",
+      "category": "Voice and identity",
+      "text": "Jarvis, what time is it?",
+      "kind": "voice",
+      "ios": "voice",
+      "action": "reply",
+      "identity": "jarvis"
+    },
+    {
+      "id": "J191",
+      "category": "Negation and clarification",
+      "text": "Do not open Chrome",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J192",
+      "category": "Negation and clarification",
+      "text": "Notepad mat kholo",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J193",
+      "category": "Negation and clarification",
+      "text": "Chrome मत खोलो",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J194",
+      "category": "Negation and clarification",
+      "text": "Say \"open Calculator\" in Hindi",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J195",
+      "category": "Negation and clarification",
+      "text": "Explain how to play music",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J196",
+      "category": "Negation and clarification",
+      "text": "Volume 101",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J197",
+      "category": "Negation and clarification",
+      "text": "Set volume to -5",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J198",
+      "category": "Negation and clarification",
+      "text": "Open Gmail and send my password",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J199",
+      "category": "Negation and clarification",
+      "text": "Team, app mat banao",
+      "kind": "reject",
+      "ios": "cloud"
+    },
+    {
+      "id": "J200",
+      "category": "Negation and clarification",
+      "text": "Switch to screen 2 and delete my files",
+      "kind": "reject",
+      "ios": "cloud"
+    }
+  ]
+}
