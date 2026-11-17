@@ -1,10 +1,12 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {LiveModeSync} from '../../lib/live-mode-sync.mjs';
 
 export default function LaptopLive(){
  const video=useRef(null),peer=useRef(null),channel=useRef(null),session=useRef(null),ended=useRef(false),generation=useRef(0),timers=useRef([]),modeRef=useRef('screen'),monitorRef=useRef(1);
  const [status,setStatus]=useState('Connecting…'),[kind,setKind]=useState('screen'),[monitor,setMonitor]=useState(1),[error,setError]=useState(''),[frames,setFrames]=useState(0);
  const [displayCount,setDisplayCount]=useState(4);
+ const modeSync=useRef(new LiveModeSync()),modeQueue=useRef(Promise.resolve());
  function native(event,extra={}){window.webkit?.messageHandlers?.mivvyLive?.postMessage({event,...extra})}
  async function api(body){
   const response=await fetch('/api/stream',{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
@@ -18,16 +20,34 @@ export default function LaptopLive(){
   if(id)fetch('/api/stream',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'stop',id}),keepalive:true}).catch(()=>{});
   if(notify){setStatus('Closed');native('closed')}
  }
- async function changeMode(next,nextMonitor=monitorRef.current){
-  if(ended.current)return;modeRef.current=next;monitorRef.current=nextMonitor;setKind(next);setMonitor(nextMonitor);
-  if(!session.current)return;
-  try{await api({action:'mode',id:session.current,kind:next,monitor:nextMonitor});native('mode',{kind:next})}
-  catch(err){setError(err.message)}
+ function paintMode(mode,notify=false){
+  modeRef.current=mode.kind;monitorRef.current=mode.monitor;setKind(mode.kind);setMonitor(mode.monitor);
+  if(notify)native('mode',{kind:mode.kind,monitor:String(mode.monitor)});
+ }
+ function submitMode(request){
+  const id=session.current,epoch=generation.current;
+  // Serialize writes: a slower screen-1 request cannot arrive after screen 2.
+  modeQueue.current=modeQueue.current.catch(()=>{}).then(async()=>{
+   if(!id||ended.current||session.current!==id||generation.current!==epoch||request.version!==modeSync.current.version)return;
+   try{
+    const data=await api({action:'mode',id,...request.mode});
+    if(ended.current||session.current!==id||generation.current!==epoch)return;
+    const selected=data.kind&&Number.isInteger(data.monitor)?data:request.mode;
+    if(modeSync.current.finish(request.version,selected)){setError('');paintMode(selected,true)}
+   }catch(err){if(request.version===modeSync.current.version){modeSync.current.fail(request.version);setError(err.message)}}
+  });
+ }
+ function changeMode(next,nextMonitor=monitorRef.current){
+  if(ended.current)return;
+  const request=modeSync.current.begin(next,nextMonitor);if(!request)return;
+  paintMode(request.mode);
+  if(session.current)submitMode(request);
  }
  useEffect(()=>{
   ended.current=false;const epoch=++generation.current,current=()=>generation.current===epoch&&!ended.current;
   const params=new URLSearchParams(location.search),initial=params.get('kind')==='camera'?'camera':'screen',initialMonitor=Number(params.get('monitor')||1);setKind(initial);modeRef.current=initial;
   if(Number.isInteger(initialMonitor)&&initialMonitor>=1&&initialMonitor<=8){monitorRef.current=initialMonitor;setMonitor(initialMonitor)}
+  modeSync.current=new LiveModeSync(initial,monitorRef.current);
   let frameCallback;
   async function start(){
    try{
@@ -39,8 +59,8 @@ export default function LaptopLive(){
      if(!current())return;const element=video.current;if(!element)return;
      element.srcObject=event.streams[0]||new MediaStream([event.track]);element.play().catch(()=>setStatus('Tap the video to play'));
      let count=0;
-     const decoded=()=>{if(!current())return;count++;if(count===1){setStatus('Live');native('connected',{kind:modeRef.current})}if(count%8===0)setFrames(count);frameCallback=element.requestVideoFrameCallback?.(decoded)};
-     if(element.requestVideoFrameCallback)frameCallback=element.requestVideoFrameCallback(decoded);else element.onplaying=()=>{setStatus('Live');native('connected',{kind:modeRef.current})};
+     const decoded=()=>{if(!current())return;count++;if(count===1){setStatus('Live');native('connected',{kind:modeRef.current,monitor:String(monitorRef.current)})}if(count%8===0)setFrames(count);frameCallback=element.requestVideoFrameCallback?.(decoded)};
+     if(element.requestVideoFrameCallback)frameCallback=element.requestVideoFrameCallback(decoded);else element.onplaying=()=>{setStatus('Live');native('connected',{kind:modeRef.current,monitor:String(monitorRef.current)})};
     };
     pc.onconnectionstatechange=()=>{
      if(current()&&pc.connectionState==='failed'){setError(config.relayConfigured?'Video connection failed. Close and reopen live view.':'This network could not establish direct video. Configure an authenticated TURN relay for reliable cross-network viewing.');native('error',{message:'Video connection failed.'});stop(false)}
@@ -53,12 +73,13 @@ export default function LaptopLive(){
     const created=await api({action:'start',kind:modeRef.current,monitor:monitorRef.current,offer:{type:'offer',sdp:pc.localDescription.sdp}});
     if(!current()){fetch('/api/stream',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'stop',id:created.stream.id}),keepalive:true}).catch(()=>{});return}
     session.current=created.stream.id;native('session',{id:created.stream.id});
-    timers.current.push(setInterval(()=>{if(session.current)api({action:'heartbeat',id:session.current}).then(data=>{
+    // Native speech may select a screen while the initial offer is in flight.
+    if(modeSync.current.pending)submitMode({version:modeSync.current.version,mode:{...modeSync.current.current}});
+    timers.current.push(setInterval(()=>{const version=modeSync.current.version;if(session.current)api({action:'heartbeat',id:session.current}).then(data=>{
      if(!current())return;
      if(['screen','camera'].includes(data.kind)&&Number.isInteger(data.monitor)&&data.monitor>=1&&data.monitor<=8){
       const changed=modeRef.current!==data.kind||monitorRef.current!==data.monitor;
-      modeRef.current=data.kind;monitorRef.current=data.monitor;setKind(data.kind);setMonitor(data.monitor);
-      if(changed)native('mode',{kind:data.kind,monitor:String(data.monitor)});
+      if(modeSync.current.observe(data,version))paintMode(data,changed);
      }
     }).catch(err=>{setError(err.message);stop(false)})},8000));
     const deadline=Date.now()+35000;
@@ -80,7 +101,7 @@ export default function LaptopLive(){
  },[]);
  return <main style={{position:'fixed',inset:0,background:'#050a0d',color:'#e0fff5',display:'flex',flexDirection:'column',fontFamily:'system-ui',fontSize:12}}>
   <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 10px',background:'#0b171d'}}>
-   <span role="status" data-testid="live-status" style={{marginRight:'auto'}}>{error?'Connection issue':status} · {kind}{frames>0?' · '+frames+' frames':''}</span>
+   <span role="status" data-testid="live-status" style={{marginRight:'auto'}}>{error?'Connection issue':status} · {kind==='screen'?'Screen '+monitor:kind}{frames>0?' · '+frames+' frames':''}</span>
    <button onClick={()=>changeMode('screen')} aria-pressed={kind==='screen'}>Screen</button>
    <button onClick={()=>changeMode('camera')} aria-pressed={kind==='camera'}>Camera</button>
    {kind==='screen'&&<select aria-label="Laptop display" value={monitor} onChange={event=>changeMode('screen',Number(event.target.value))}>{Array.from({length:displayCount},(_,i)=>i+1).map(id=><option key={id} value={id}>Display {id}</option>)}</select>}

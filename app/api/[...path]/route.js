@@ -122,7 +122,7 @@ async function route(req,ctx){
  if(path==='stream'){
   requireOwner(user);
   if(req.method==='GET'){
-   if(!url.searchParams.get('id')){const device=(await db.documents(user.id)).find(d=>d.kind==='device');return json({...iceConfiguration(),protocol:'webrtc-video-v1',displays:device?.data.displays||4})}
+   if(!url.searchParams.get('id')){const device=(await db.documents(user.id)).find(d=>d.kind==='device'),active=await db.getStream(user.id);return json({...iceConfiguration(),protocol:'webrtc-video-v1',displays:device?.data.displays||4,activeStream:active?{id:active.id,kind:active.data.kind,monitor:active.data.monitor,status:active.data.status}:null})}
    const stream=await db.getStream(user.id,url.searchParams.get('id'));
    return stream?json({stream:{id:stream.id,expires:stream.expires,kind:stream.data.kind,monitor:stream.data.monitor,status:stream.data.status,answer:stream.data.answer,error:stream.data.error||null}}):json({error:'Stream ended, expired or replaced.'},404);
   }
@@ -139,7 +139,7 @@ async function route(req,ctx){
   if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404)}
   if(input.action==='mode'){
    const device=(await db.documents(user.id)).find(d=>d.kind==='device'),mode=streamMode(input,device?.data.displays||8);
-   const row=await db.updateStream(user.id,id,mode,true);return row?json({ok:true}):json({error:'Stream expired.'},404);
+   const row=await db.updateStream(user.id,id,mode,true);return row?json({ok:true,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404);
   }
   throw new Error('Unknown stream operation.');
  }
@@ -190,7 +190,7 @@ async function route(req,ctx){
    if(id){const previous=await db.getJob(user.id,id);if(previous){if(previous.status!=='cancelled'&&['request','identity','conversation'].some(key=>(previous.payload?.[key]??null)!==(payload[key]??null)))throw new Error('This request ID already belongs to a different instruction.');return json({job:previous})}}
    const switched=researching?await answer(user,{text:payload.request,conversation:payload.conversation||'laptop',identity:payload.identity,signal:req.signal}):await switchSharedDisplay(user,payload.request,{signal:req.signal});
    if(switched){
-    req.signal.throwIfAborted();const job=await db.completedCommand(user.id,payload,{reply:switched.reply},id);
+    req.signal.throwIfAborted();const job=await db.completedCommand(user.id,payload,{reply:switched.reply,...(Number.isInteger(switched.monitor)?{monitor:switched.monitor}:{})},id);
     if(job.status==='done'){
      await db.addMessage(user.id,payload.conversation||'laptop','user',payload.request,payload.identity,'remote-user-'+job.id);
      const reply=await db.addMessage(user.id,payload.conversation||'laptop','assistant',job.result.reply,payload.identity,'remote-assistant-'+job.id);
