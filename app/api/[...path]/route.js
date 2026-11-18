@@ -124,9 +124,9 @@ async function route(req,ctx){
  if(path==='stream'){
   requireOwner(user);
   if(req.method==='GET'){
-   if(!url.searchParams.get('id')){const device=(await db.documents(user.id)).find(d=>d.kind==='device'),active=await db.getStream(user.id);return json({...iceConfiguration(),protocol:'webrtc-video-v1',displays:device?.data.displays||4,activeStream:active?{id:active.id,kind:active.data.kind,monitor:active.data.monitor,status:active.data.status}:null})}
+   if(!url.searchParams.get('id')){const device=(await db.documents(user.id)).find(d=>d.kind==='device'),active=await db.getStream(user.id);return json({...iceConfiguration(),protocol:'webrtc-video-v1',displays:device?.data.displays||4,activeStream:active?{id:active.id,kind:active.data.kind,monitor:active.data.monitor,status:active.data.status,revision:active.data.revision||0}:null})}
    const stream=await db.getStream(user.id,url.searchParams.get('id'));
-   return stream?json({stream:{id:stream.id,expires:stream.expires,kind:stream.data.kind,monitor:stream.data.monitor,status:stream.data.status,answer:stream.data.answer,error:stream.data.error||null}}):json({error:'Stream ended, expired or replaced.'},404);
+   return stream?json({stream:{id:stream.id,expires:stream.expires,kind:stream.data.kind,monitor:stream.data.monitor,status:stream.data.status,revision:stream.data.revision||0,answer:stream.data.answer,error:stream.data.error||null}}):json({error:'Stream ended, expired or replaced.'},404);
   }
   const input=await body(req);
   if(input.action==='start'){
@@ -138,10 +138,10 @@ async function route(req,ctx){
   }
   const id=String(input.id||'');if(!/^[a-f0-9-]{36}$/.test(id))throw new Error('Stream ID missing.');
   if(input.action==='stop'){await db.stopStream(user.id,id);return json({ok:true})}
-  if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404)}
+  if(input.action==='heartbeat'){const row=await db.updateStream(user.id,id,{},true);if(row?.data.status==='failed')return json({error:row.data.error||'Stream failed.'},409);return row?json({expires:row.expires,kind:row.data.kind,monitor:row.data.monitor,revision:row.data.revision||0}):json({error:'Stream expired.'},404)}
   if(input.action==='mode'){
    const device=(await db.documents(user.id)).find(d=>d.kind==='device'),mode=streamMode(input,device?.data.displays||8);
-   const row=await db.updateStream(user.id,id,mode,true);return row?json({ok:true,kind:row.data.kind,monitor:row.data.monitor}):json({error:'Stream expired.'},404);
+   const row=await db.updateStream(user.id,id,mode,true);return row?json({ok:true,kind:row.data.kind,monitor:row.data.monitor,revision:row.data.revision||0}):json({error:'Stream expired.'},404);
   }
   throw new Error('Unknown stream operation.');
  }

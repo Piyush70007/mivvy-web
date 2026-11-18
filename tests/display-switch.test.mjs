@@ -47,3 +47,9 @@ test('server-side voice changes are adopted after local writes finish',()=>{
  sync.fail(request.version);assert(sync.observe({kind:'screen',monitor:1},sync.version));
  assert.deepEqual(sync.current,{kind:'screen',monitor:1});
 });
+test('an older server selection cannot undo a newer data-channel selection',()=>{
+ const sync=new LiveModeSync();assert(sync.observe({kind:'screen',monitor:2,revision:4},0));
+ assert.equal(sync.observe({kind:'screen',monitor:1,revision:3},0),false);
+ assert.equal(sync.current.monitor,2);
+ const request=sync.begin('screen',1);assert(sync.finish(request.version,{kind:'screen',monitor:1,revision:5}));assert.equal(sync.revision,5);
+});

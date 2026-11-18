@@ -7,6 +7,10 @@ export default function LaptopLive(){
  const [status,setStatus]=useState('Connecting…'),[kind,setKind]=useState('screen'),[monitor,setMonitor]=useState(1),[error,setError]=useState(''),[frames,setFrames]=useState(0);
  const [displayCount,setDisplayCount]=useState(4);
  const modeSync=useRef(new LiveModeSync()),modeQueue=useRef(Promise.resolve());
+ const captured=useRef(null);
+ function sendSelection(mode){
+  if(channel.current?.readyState==='open'&&Number.isInteger(mode.revision))channel.current.send(JSON.stringify({type:'select',kind:mode.kind,monitor:mode.monitor,revision:mode.revision}));
+ }
  function native(event,extra={}){window.webkit?.messageHandlers?.mivvyLive?.postMessage({event,...extra})}
  async function api(body){
   const response=await fetch('/api/stream',{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
@@ -21,6 +25,7 @@ export default function LaptopLive(){
   if(notify){setStatus('Closed');native('closed')}
  }
  function paintMode(mode,notify=false){
+  if(modeRef.current!==mode.kind||monitorRef.current!==mode.monitor)setStatus('Switching…');
   modeRef.current=mode.kind;monitorRef.current=mode.monitor;setKind(mode.kind);setMonitor(mode.monitor);
   if(notify)native('mode',{kind:mode.kind,monitor:String(mode.monitor)});
  }
@@ -33,7 +38,7 @@ export default function LaptopLive(){
     const data=await api({action:'mode',id,...request.mode});
     if(ended.current||session.current!==id||generation.current!==epoch)return;
     const selected=data.kind&&Number.isInteger(data.monitor)?data:request.mode;
-    if(modeSync.current.finish(request.version,selected)){setError('');paintMode(selected,true)}
+    if(modeSync.current.finish(request.version,selected)){setError('');paintMode(selected,true);sendSelection(selected)}
    }catch(err){if(request.version===modeSync.current.version){modeSync.current.fail(request.version);setError(err.message)}}
   });
  }
@@ -55,12 +60,19 @@ export default function LaptopLive(){
     if(Number.isInteger(config.displays)&&config.displays>=1&&config.displays<=8)setDisplayCount(config.displays);
     const pc=new RTCPeerConnection({iceServers:config.iceServers});peer.current=pc;
     channel.current=pc.createDataChannel('mivvy-live-control');pc.addTransceiver('video',{direction:'recvonly'});
+    channel.current.onopen=()=>{if(current())sendSelection({...modeSync.current.current,revision:modeSync.current.revision})};
+    channel.current.onmessage=event=>{
+     if(!current()||typeof event.data!=='string'||event.data.length>250)return;
+     try{const data=JSON.parse(event.data);if(data.type==='capture'&&['screen','camera'].includes(data.kind)&&Number.isInteger(data.monitor)&&data.revision>=modeSync.current.revision)captured.current=data}catch{}
+    };
     pc.ontrack=event=>{
      if(!current())return;const element=video.current;if(!element)return;
      element.srcObject=event.streams[0]||new MediaStream([event.track]);element.play().catch(()=>setStatus('Tap the video to play'));
      let count=0;
-     const decoded=()=>{if(!current())return;count++;if(count===1){setStatus('Live');native('connected',{kind:modeRef.current,monitor:String(monitorRef.current)})}if(count%8===0)setFrames(count);frameCallback=element.requestVideoFrameCallback?.(decoded)};
-     if(element.requestVideoFrameCallback)frameCallback=element.requestVideoFrameCallback(decoded);else element.onplaying=()=>{setStatus('Live');native('connected',{kind:modeRef.current,monitor:String(monitorRef.current)})};
+     let confirmed='';
+     const confirm=()=>{const data=captured.current;if(data&&data.kind===modeRef.current&&data.monitor===monitorRef.current&&data.revision>=modeSync.current.revision){const key=data.kind+':'+data.monitor+':'+data.revision;if(key!==confirmed){confirmed=key;setStatus('Live');native('connected',{kind:data.kind,monitor:String(data.monitor)})}}else if(!confirmed)setStatus('Video connected · confirming display…')};
+     const decoded=()=>{if(!current())return;count++;confirm();if(count%8===0)setFrames(count);frameCallback=element.requestVideoFrameCallback?.(decoded)};
+     if(element.requestVideoFrameCallback)frameCallback=element.requestVideoFrameCallback(decoded);else{element.onplaying=confirm;timers.current.push(setInterval(confirm,500))}
     };
     pc.onconnectionstatechange=()=>{
      if(current()&&pc.connectionState==='failed'){setError(config.relayConfigured?'Video connection failed. Close and reopen live view.':'This network could not establish direct video. Configure an authenticated TURN relay for reliable cross-network viewing.');native('error',{message:'Video connection failed.'});stop(false)}
@@ -79,9 +91,10 @@ export default function LaptopLive(){
      if(!current())return;
      if(['screen','camera'].includes(data.kind)&&Number.isInteger(data.monitor)&&data.monitor>=1&&data.monitor<=8){
       const changed=modeRef.current!==data.kind||monitorRef.current!==data.monitor;
-      if(modeSync.current.observe(data,version))paintMode(data,changed);
+      const priorRevision=modeSync.current.revision;
+      if(modeSync.current.observe(data,version)){paintMode(data,changed);if(changed||priorRevision!==modeSync.current.revision)sendSelection(data)}
      }
-    }).catch(err=>{setError(err.message);stop(false)})},8000));
+    }).catch(err=>{setError(err.message);stop(false)})},2000));
     const deadline=Date.now()+35000;
     while(current()&&Date.now()<deadline){
      const response=await fetch('/api/stream?id='+encodeURIComponent(session.current),{cache:'no-store'}),data=await response.json();
