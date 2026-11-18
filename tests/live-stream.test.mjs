@@ -1,9 +1,14 @@
 process.env.OWNER_EMAIL='owner@example.com';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamIntent,streamMode} from '../lib/live-stream.mjs';
+import {requireOwner,streamOffer,streamAnswer,streamCapture,iceConfiguration,streamIntent,streamMode} from '../lib/live-stream.mjs';
 const owner={owner:true,email:'owner@example.com'};
 const offer={type:'offer',sdp:'v=0\r\nm=video 9 UDP/TLS/RTP/SAVPF 96\r\na=recvonly\r\n'};
+test('capture receipts acknowledge only the current mode and revision',()=>{
+ const current={kind:'screen',monitor:2,revision:4,status:'ready'},input={kind:'screen',monitor:2,revision:4};
+ assert.equal(streamCapture(input,current).captured.monitor,2);
+ for(const change of [{monitor:1},{revision:3},{kind:'camera'}])assert.throws(()=>streamCapture({...input,...change},current));
+});
 test('display changes accept both physical displays and reject missing ones before updating the stream',()=>{
  for(const monitor of [1,2])assert.deepEqual(streamMode({kind:'screen',monitor},2),{kind:'screen',monitor});
  for(const monitor of [0,3,8])assert.throws(()=>streamMode({kind:'screen',monitor},2));

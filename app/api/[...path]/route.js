@@ -7,7 +7,7 @@ import {transcribeVoice} from '../../../lib/transcription.mjs';
 import {connectionStatus,beginConnection,finishConnection,providers,appOrigin,setSlackReminders,sendSlackToMe} from '../../../lib/connections.mjs';
 import {connectedAnswer,connectionIntent} from '../../../lib/connected-assistant.mjs';
 import {laptopCommand,mobileCapabilities} from '../../../lib/mobile.mjs';
-import {requireOwner,streamOffer,streamAnswer,iceConfiguration,streamMode} from '../../../lib/live-stream.mjs';
+import {requireOwner,streamOffer,streamAnswer,streamCapture,iceConfiguration,streamMode} from '../../../lib/live-stream.mjs';
 import {ownerLaptopChat,switchSharedDisplay} from '../../../lib/laptop-chat.mjs';
 import {personalToolRequest} from '../../../lib/personal-tools.mjs';
 import {needsLiveResearch} from '../../../lib/live-research.mjs';
@@ -44,6 +44,12 @@ async function route(req,ctx){
    return json({job:await db.claimJob(url.searchParams.get('accept_commands')!=='0',owner.id),stream:stream?{...stream,iceServers:iceConfiguration().iceServers}:null,cancelCommand:active?.status==='cancelled'?running:null});
   }
   const input=await body(req);
+  if(input.action==='stream_capture'){
+   const id=String(input.id||''),row=await db.getStream(owner.id,id);
+   if(!row)return json({error:'Stream expired or replaced.'},409);
+   const updated=await db.updateStream(owner.id,id,streamCapture(input,row.data));
+   return updated?json({ok:true}):json({error:'Stream expired or replaced.'},409);
+  }
   if(input.action==='stream_answer'){
    const updated=await db.updateStream(owner.id,String(input.id||''),streamAnswer(input));
    return updated?json({ok:true}):json({error:'Stream expired or replaced.'},409);
