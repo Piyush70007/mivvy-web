@@ -89,3 +89,13 @@ See [architecture and privacy](docs/ARCHITECTURE.md).
 The first commits import the existing project in logical groups: configuration,
 application code, regression tests and documentation. They are current
 publication commits, not a backdated reconstruction of development.
+
+## Keeping watch
+
+Explicit requests such as “Notify me when a job email arrives” create persistent, account-scoped Gmail watches. The Keeping watch panel shows criteria, last check, failures and new matching messages, with pause/resume/remove and read controls. Gmail remains read-only. Matching mail is never treated as instructions.
+
+Open web/iOS client syncs and the desktop companion drive checks, leased at 30-second intervals to prevent duplicate work. A daily Vercel cron is catch-up only; this is **not** an always-on instant Gmail push service. Gmail Pub/Sub is not configured. No AI request is made during routine polling; a custom criterion can use the model once during setup.
+
+Alerts are saved once per Gmail message and account. Web push uses generic notices when that device has subscribed. Slack delivery requires explicit consent in that individual watch request; reminder consent does not authorize forwarding email alerts. The desktop update adds a generic spoken notice when idle, without interrupting an active turn.
+
+Native iOS chat uses the same watch backend; its existing state sync triggers checks while open. Lock-screen delivery to a closed native app still needs the separate Apple push setup. The web Keeping watch panel is the complete management interface for this release.

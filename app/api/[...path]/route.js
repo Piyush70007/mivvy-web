@@ -1,5 +1,6 @@
 import {savedPerformance,speechDelivery} from '../../../lib/performance.mjs';
 import {cookies} from 'next/headers';
+import {after} from 'next/server';
 import * as db from '../../../lib/db.mjs';
 import {digest,verifyPassword,passwordHash,newToken,cleanEmail,ownerEmail,canAccessLaptop,safeEqual,validateEntry} from '../../../lib/security.mjs';
 import {answer,identities} from '../../../lib/assistant.mjs';
@@ -13,6 +14,8 @@ import {personalToolRequest} from '../../../lib/personal-tools.mjs';
 import {needsLiveResearch} from '../../../lib/live-research.mjs';
 import {resolveAssistantTurn} from '../../../lib/chat-routing.mjs';
 import {actionShaped,routeUnfamiliarOwnerRequest} from '../../../lib/agent-routing.mjs';
+import {mailWatchIntent,mailWatchAnswer} from '../../../lib/mail-watch.mjs';
+import {attentionTick,attentionState} from '../../../lib/attention.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
 export const dynamic='force-dynamic';
@@ -34,7 +37,7 @@ async function route(req,ctx){
  try{
  const path=(await ctx.params).path.join('/'),url=new URL(req.url);
  if(path==='health')return json({ok:true,accounts:Boolean(process.env.DATABASE_URL)||db.localDevelopment,ai:Boolean(process.env.DEEPSEEK_API_KEY),voice:Boolean(process.env.FISH_AUDIO_API_KEY),development:db.localDevelopment});
- if(path==='cron'){if(!process.env.CRON_SECRET||!safeEqual(req.headers.get('authorization'),'Bearer '+process.env.CRON_SECRET))return json({error:'Unauthorized'},401);return json(await reminderTick())}
+ if(path==='cron'){if(!process.env.CRON_SECRET||!safeEqual(req.headers.get('authorization'),'Bearer '+process.env.CRON_SECRET))return json({error:'Unauthorized'},401);return json({reminders:await reminderTick(),attention:await attentionTick(null,{signal:req.signal})})}
  if(path==='device'){
   if(!deviceAuth(req))return json({error:'Unauthorized'},401);await db.init();const owner=await db.userByEmail(ownerEmail());if(!owner?.owner)return json({error:'Owner must sign in first.'},409);
   if(req.method==='GET'){
@@ -68,10 +71,11 @@ async function route(req,ctx){
   }
   if(input.action==='sync'){for(const m of (input.messages||[]).slice(-30)){if(!['user','assistant'].includes(m.role)||typeof m.content!=='string'||!/^desktop-[a-f0-9]{32,64}$/.test(m.id||''))continue;await db.addMessage(owner.id,'laptop',m.role,m.content.slice(0,5000),String(m.identity||'andrea').slice(0,20),m.id)}return json({ok:true})}
   if(input.action==='connected_tool'){
-   const text=String(input.request||'').trim();if(!text||text.length>4000||!connectionIntent(text))throw new Error('Use a requested Gmail search or Slack message.');
+   const text=String(input.request||'').trim();if(!text||text.length>4000||!(connectionIntent(text)||mailWatchIntent(text)))throw new Error('Use a requested Gmail search, email watch or Slack message.');
    if(!await db.limit('connected:'+owner.id,200,86400))return json({error:'Connected service allowance reached.'},429);
    const context=Array.isArray(input.context)?input.context.filter(m=>['user','assistant'].includes(m?.role)&&typeof m.content==='string').slice(-8).map(m=>({role:m.role,content:m.content.slice(0,5000)})):[];
-   return json(await connectedAnswer(owner,{text,identity:identities.includes(input.identity)?input.identity:'andrea',history:context.length?context:(await db.messages(owner.id,'laptop')).slice(-8),signal:req.signal}));
+   const request={text,identity:identities.includes(input.identity)?input.identity:'andrea',history:context.length?context:(await db.messages(owner.id,'laptop')).slice(-8),signal:req.signal};
+   return json(mailWatchIntent(text)?await mailWatchAnswer(owner,request):await connectedAnswer(owner,request));
   }
   if(input.action==='personal_tool'||input.action==='switch_display'){
    const text=String(input.request||'').trim();if(!text||text.length>4000||/\b(?:sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})/.test(text))throw new Error('Use a tool request without credentials.');
@@ -84,7 +88,7 @@ async function route(req,ctx){
    const result=await answer(owner,{text,identity,conversation,history,signal:req.signal});
    await db.addMessage(owner.id,conversation,'user',text,identity);await db.addMessage(owner.id,conversation,'assistant',result.reply,identity);return json(result);
   }
-  if(input.action==='tick')return json(await reminderTick());throw new Error('Unknown device operation.');
+  if(input.action==='tick')return json({...await reminderTick(),attention:await attentionTick(owner.id,{signal:req.signal}),alerts:(await db.mailAlerts(owner.id)).filter(x=>!x.seen)});throw new Error('Unknown device operation.');
  }
  if(req.method!=='GET')csrf(req);
  if(path==='auth'){
@@ -98,6 +102,19 @@ async function route(req,ctx){
   const token=newToken();await db.addSession(digest(token),user.id);(await cookies()).set('andrea_session',token,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'lax',path:'/',maxAge:7*86400});return json({user:{email:user.email,owner:canAccessLaptop(user)}});
  }
  const user=await current();if(!user)return json({error:'Sign in to continue.'},401);
+ if(path==='attention'){
+  if(req.method==='GET')return json(await attentionState(user));
+  if(req.method!=='POST')return json({error:'Method not allowed'},405);
+  const input=await body(req);
+  if(input.action==='tick'){if(!await db.limit('attention-tick:'+user.id,8,60))return json({error:'Please wait before checking again.'},429);return json({tick:await attentionTick(user.id,{signal:req.signal}),...await attentionState(user)})}
+  if(input.action==='watch'){const text=String(input.request||'').slice(0,4000);if(!mailWatchIntent(text))throw new Error('Describe the email watch you want.');return json(await mailWatchAnswer(user,{text,identity:input.identity,signal:req.signal}))}
+  if(input.action==='read'){await db.readMailAlerts(user.id,input.ids);return json({ok:true})}
+  if(['pause','resume','delete'].includes(input.action)){
+   if(input.action==='resume'&&!(await connectionStatus(user)).gmail.connected)throw new Error('Reconnect Gmail first.');
+   if(!await db.changeMailWatch(user.id,String(input.id),input.action))return json({error:'Watch not found.'},404);return json(await attentionState(user));
+  }
+  throw new Error('Unknown attention operation.');
+ }
  if(path==='logout'){await db.removeSession(digest((await cookies()).get('andrea_session')?.value||''));(await cookies()).delete('andrea_session');return json({ok:true})}
  if(path==='connections'){
   if(req.method==='GET')return json({connections:await connectionStatus(user)});
@@ -161,7 +178,7 @@ async function route(req,ctx){
   try{return json(await transcribeVoice(audio,String(input.get('language')||'en'),{key:process.env.FISH_AUDIO_API_KEY,signal:req.signal}))}catch(error){if(error.status)return json({error:error.message},error.status);throw error}
  }
  if(path==='state'){
-  if(req.method==='GET'){const docs=await db.documents(user.id);return json({account:user.email,docs:docs.filter(d=>d.kind!=='subscription'),messages:await db.messages(user.id,url.searchParams.get('conversation'))})}
+  if(req.method==='GET'){const docs=await db.documents(user.id);after(()=>attentionTick(user.id).catch(()=>{}));return json({account:user.email,docs:docs.filter(d=>d.kind!=='subscription'),messages:await db.messages(user.id,url.searchParams.get('conversation'))})}
   const input=await body(req);if(input.action==='delete'){await db.deleteDoc(user.id,String(input.id));return json({ok:true})}
   const data=validateEntry(input.kind,input.data||{});return json({doc:await db.putDoc(user.id,input.kind,data,typeof input.id==='string'?input.id:undefined)});
  }
