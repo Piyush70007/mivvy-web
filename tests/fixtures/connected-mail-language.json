@@ -1,0 +1,42 @@
+{
+  "read": [
+    "tell m,e recent job emails i got",
+    "Tell me recent job emails I got",
+    "Tell me about the emails I received",
+    "Give me my recent interview emails",
+    "List my latest job application emails",
+    "What job emails did I get?",
+    "Which emails have I received?",
+    "Have I received any interview mail?",
+    "Did I get any recruiter emails?",
+    "Are there any job application updates?",
+    "Any new emails?",
+    "Recent job emails",
+    "My unread mails please",
+    "job emails",
+    "Read my e mail",
+    "Summarise my Gmail",
+    "mere recent job emails batao",
+    "mujhe interview ke emails dikhao",
+    "मेरे नौकरी के ईमेल बताओ",
+    "मेरे हाल के मेल दिखाओ",
+    "Check if there is any message regarding my job applications"
+  ],
+  "ignore": [
+    "Open Gmail",
+    "Show me the Gmail tab on Chrome",
+    "Switch to my inbox tab",
+    "Don't read my emails",
+    "Do not check Gmail",
+    "Never search my inbox",
+    "मेरे ईमेल मत पढ़ो",
+    "Translate tell me recent job emails",
+    "Say check my Gmail",
+    "Explain email filters",
+    "Read this email: hello world",
+    "I got a job email and I am happy",
+    "My friend received an interview email",
+    "Tell me a joke",
+    "What is email?"
+  ]
+}
