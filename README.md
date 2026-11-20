@@ -99,3 +99,11 @@ Open web/iOS client syncs and the desktop companion drive checks, leased at 30-s
 Alerts are saved once per Gmail message and account. Web push uses generic notices when that device has subscribed. Slack delivery requires explicit consent in that individual watch request; reminder consent does not authorize forwarding email alerts. The desktop update adds a generic spoken notice when idle, without interrupting an active turn.
 
 Native iOS chat uses the same watch backend; its existing state sync triggers checks while open. Lock-screen delivery to a closed native app still needs the separate Apple push setup. The web Keeping watch panel is the complete management interface for this release.
+
+## Intent fallback for unfamiliar wording
+
+Connected-account phrase checks are now fast paths rather than a rejection boundary. Unfamiliar mail wording is interpreted by the model into a bounded, read-only Gmail query or an existing watch operation. The authenticated executor validates operation type, account, query size, literal addresses and required watch details. It does not accept sending/deleting/other-account operations from this fallback.
+
+The shared capability router can select this route for an unfamiliar personal-mail goal instead of trying desktop automation or denying access. Ordinary greetings retain the existing path. Close spelling is only a hint to ask the intent model; it never rewrites the original request or grants permission. Private account results are never cached as general answers.
+
+This is a targeted repair to connected-account understanding and capability routing, not a guarantee that every desktop task succeeds. Existing desktop observation, action validation, verification and confirmation boundaries still apply.

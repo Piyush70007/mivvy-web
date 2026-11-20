@@ -71,7 +71,7 @@ async function route(req,ctx){
   }
   if(input.action==='sync'){for(const m of (input.messages||[]).slice(-30)){if(!['user','assistant'].includes(m.role)||typeof m.content!=='string'||!/^desktop-[a-f0-9]{32,64}$/.test(m.id||''))continue;await db.addMessage(owner.id,'laptop',m.role,m.content.slice(0,5000),String(m.identity||'andrea').slice(0,20),m.id)}return json({ok:true})}
   if(input.action==='connected_tool'){
-   const text=String(input.request||'').trim();if(!text||text.length>4000||!(connectionIntent(text)||mailWatchIntent(text)))throw new Error('Use a requested Gmail search, email watch or Slack message.');
+   const text=String(input.request||'').trim();if(!text||text.length>4000||/\b(?:sk-[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})/.test(text))throw new Error('Use a connected-account request without credentials.');
    if(!await db.limit('connected:'+owner.id,200,86400))return json({error:'Connected service allowance reached.'},429);
    const context=Array.isArray(input.context)?input.context.filter(m=>['user','assistant'].includes(m?.role)&&typeof m.content==='string').slice(-8).map(m=>({role:m.role,content:m.content.slice(0,5000)})):[];
    const request={text,identity:identities.includes(input.identity)?input.identity:'andrea',history:context.length?context:(await db.messages(owner.id,'laptop')).slice(-8),signal:req.signal};
