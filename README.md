@@ -98,6 +98,8 @@ Open web/iOS client syncs and the desktop companion drive checks, leased at 30-s
 
 Alerts are saved once per Gmail message and account. Web push uses generic notices when that device has subscribed. Slack delivery requires explicit consent in that individual watch request; reminder consent does not authorize forwarding email alerts. The desktop update adds a generic spoken notice when idle, without interrupting an active turn.
 
+An account can select a positive-interview-only delivery policy. Routine application receipts, rejections and promotions then stay silent; only clear interview invitations or hiring-stage progress qualify for proactive speech. Slack forwarding of those positive updates requires the account's explicit preference and an existing linked own-DM connection. Filtering uses subject/snippet metadata without model or speech-generation calls. A new policy excludes old received mail from proactive delivery. Email reading requested by the user remains available independently.
+
 Native iOS chat uses the same watch backend; its existing state sync triggers checks while open. Lock-screen delivery to a closed native app still needs the separate Apple push setup. The web Keeping watch panel is the complete management interface for this release.
 
 ## Intent fallback for unfamiliar wording

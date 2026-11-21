@@ -16,6 +16,7 @@ import {resolveAssistantTurn} from '../../../lib/chat-routing.mjs';
 import {actionShaped,routeUnfamiliarOwnerRequest} from '../../../lib/agent-routing.mjs';
 import {mailWatchIntent,mailWatchAnswer} from '../../../lib/mail-watch.mjs';
 import {attentionTick,attentionState} from '../../../lib/attention.mjs';
+import {mailDelivery,saveMailDelivery,proactiveDeliverable} from '../../../lib/mail-delivery.mjs';
 export const runtime='nodejs';
 export const maxDuration=60;
 export const dynamic='force-dynamic';
@@ -88,7 +89,8 @@ async function route(req,ctx){
    const result=await answer(owner,{text,identity,conversation,history,signal:req.signal});
    await db.addMessage(owner.id,conversation,'user',text,identity);await db.addMessage(owner.id,conversation,'assistant',result.reply,identity);return json(result);
   }
-  if(input.action==='tick')return json({...await reminderTick(),attention:await attentionTick(owner.id,{signal:req.signal}),alerts:(await db.mailAlerts(owner.id)).filter(x=>!x.seen)});throw new Error('Unknown device operation.');
+  if(input.action==='mail_delivery')return json({policy:await saveMailDelivery(owner.id,input,{status:connectionStatus})});
+  if(input.action==='tick'){const policy=await mailDelivery(owner.id);return json({...await reminderTick(),attention:await attentionTick(owner.id,{signal:req.signal}),alerts:(await db.mailAlerts(owner.id)).filter(x=>!x.seen&&proactiveDeliverable(x,policy)),mailDelivery:policy})}throw new Error('Unknown device operation.');
  }
  if(req.method!=='GET')csrf(req);
  if(path==='auth'){
@@ -106,6 +108,7 @@ async function route(req,ctx){
   if(req.method==='GET')return json(await attentionState(user));
   if(req.method!=='POST')return json({error:'Method not allowed'},405);
   const input=await body(req);
+  if(input.action==='delivery')return json({policy:await saveMailDelivery(user.id,input,{status:connectionStatus})});
   if(input.action==='tick'){if(!await db.limit('attention-tick:'+user.id,8,60))return json({error:'Please wait before checking again.'},429);return json({tick:await attentionTick(user.id,{signal:req.signal}),...await attentionState(user)})}
   if(input.action==='watch'){const text=String(input.request||'').slice(0,4000);if(!mailWatchIntent(text))throw new Error('Describe the email watch you want.');return json(await mailWatchAnswer(user,{text,identity:input.identity,signal:req.signal}))}
   if(input.action==='read'){await db.readMailAlerts(user.id,input.ids);return json({ok:true})}
