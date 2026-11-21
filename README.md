@@ -96,7 +96,7 @@ Explicit requests such as “Notify me when a job email arrives” create persis
 
 Open web/iOS client syncs and the desktop companion drive checks, leased at 30-second intervals to prevent duplicate work. A daily Vercel cron is catch-up only; this is **not** an always-on instant Gmail push service. Gmail Pub/Sub is not configured. No AI request is made during routine polling; a custom criterion can use the model once during setup.
 
-Alerts are saved once per Gmail message and account. Web push uses generic notices when that device has subscribed. Slack delivery requires explicit consent in that individual watch request; reminder consent does not authorize forwarding email alerts. The desktop update adds a generic spoken notice when idle, without interrupting an active turn.
+Alerts are saved once per Gmail message and account. Web push uses generic notices when that device has subscribed. Slack delivery requires explicit consent in the watch request or the positive-interview delivery policy; reminder consent does not authorize forwarding email alerts. The desktop can speak a generic notice for eligible positive interview updates when idle, without interrupting an active turn.
 
 An account can select a positive-interview-only delivery policy. Routine application receipts, rejections and promotions then stay silent; only clear interview invitations or hiring-stage progress qualify for proactive speech. Slack forwarding of those positive updates requires the account's explicit preference and an existing linked own-DM connection. Filtering uses subject/snippet metadata without model or speech-generation calls. A new policy excludes old received mail from proactive delivery. Email reading requested by the user remains available independently.
 
